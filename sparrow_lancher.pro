@@ -26,12 +26,12 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    luancher.cpp
+    launcher.cpp
 
 HEADERS += \
         mainwindow.h \
     menubar.h \
-    luancher.h
+    launcher.h
 
 FORMS += \
         mainwindow.ui

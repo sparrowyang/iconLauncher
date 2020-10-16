@@ -22,7 +22,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+
     delete ui;
+    qDebug()<<"closing MainWindow..";
+
 }
 
 void MainWindow::MoveEdge(){
@@ -33,13 +36,16 @@ void MainWindow::MoveEdge(){
 
 void MainWindow::mousePressEvent(QMouseEvent *event)
 {
+
     //按住左键可以托动窗口，按下右键关闭程序
     if(event->button() == Qt::LeftButton)
     {
+
         m_CurrentPos = event->globalPos() - frameGeometry().topLeft();
         event->accept();
     }
     else if(event->button() == Qt::RightButton){
+        //QString srcDirPath = QFileDialog::getExistingDirectory(this,QObject::tr("s"),"D:/",QFileDialog::DontUseNativeDialog);
         rightClickMenu();
         //mbar.show();
     }
@@ -82,52 +88,9 @@ void MainWindow::rightClickMenu(){
     这些东西最好写在类成员里，每次创建和销毁有点鸡肋
     */
 
-    QMenu *pMenu = new QMenu(this);
-
-
-    QMenu *pNewTask = new QMenu(tr("启动"), this);
-    QAction *taskExplore = new QAction(tr("文件管理器"), this);
-
-    QAction *pEditTask = new QAction(tr("设置任务"), this);
-    QAction *pDeleteTask = new QAction(tr("删除任务"), this);
-    QAction *pToolRenName = new QAction(tr("改名工具"), this);
-    QAction *pToolEdot = new QAction(tr("设置工具"), this);
-    QAction *pToolDelete = new QAction(tr("退出"), this);
-
-    //1:新建任务 2:设置任务 3:删除任务 4:改名工具 5:设置工具 6:删除工具
-    taskExplore->setData(1);
-    pEditTask->setData(2);
-    pDeleteTask ->setData(3);
-    pToolRenName->setData(4);
-    pToolEdot->setData(5);
-    pToolDelete ->setData(6);
-
-    pNewTask->addAction(taskExplore);
-    //把QAction对象添加到菜单上
-    pMenu->addMenu(pNewTask);
-    pMenu->addAction(pEditTask);
-    pMenu->addAction(pDeleteTask);
-    pMenu->addAction(pToolRenName);
-    pMenu->addAction(pToolEdot);
-    pMenu->addAction(pToolDelete);
-
-    //连接鼠标右键点击信号
-    //链接Qaction 的点击信号到 onTaskBoxContextMenuEvent()槽，这样
-    //点击QAction 后会发送信号，槽就会收到。
-    connect(taskExplore, SIGNAL(triggered()), this, SLOT(onTaskBoxContextMenuEvent()));
-    connect(pEditTask, SIGNAL(triggered()), this, SLOT(onTaskBoxContextMenuEvent()));
-    connect(pDeleteTask, SIGNAL(triggered()), SLOT(onTaskBoxContextMenuEvent()));
-    connect(pToolRenName, SIGNAL(triggered()), this, SLOT(onTaskBoxContextMenuEvent()));
-    connect(pToolEdot, SIGNAL(triggered()), this, SLOT(onTaskBoxContextMenuEvent()));
-    connect(pToolDelete, SIGNAL(triggered()), SLOT(onTaskBoxContextMenuEvent()));
-
     //在鼠标右键点击的地方显示菜单
-    pMenu->exec(cursor().pos());
+    launcher.exec(cursor().pos());
 
-    //释放内存
-    QList<QAction*> list = pMenu->actions();
-    foreach (QAction* pAction, list) delete pAction;
-    delete pMenu;
 }
 
 void MainWindow::onTaskBoxContextMenuEvent()
@@ -140,8 +103,8 @@ void MainWindow::onTaskBoxContextMenuEvent()
     switch (iType)
     {
     case 1:
-
-        luancher.openFolder(QString::fromLocal8Bit("D:/QQ_data"));
+        launcher.addFolder(this);
+        //luancher.openFolder(QString::fromLocal8Bit("D:/QQ_data"));
         break;
     case 2:
         QMessageBox::about(this, "tip", pEven->text());
@@ -170,17 +133,26 @@ void MainWindow::showIcon(){
     m_trayIcon.setToolTip(tr("Known image viewer"));    //设置鼠标放上去显示的信息
     QMenu *menu = new QMenu(this);			 //右键菜单
     QAction *quit = new QAction(tr("退出"),this);
+    QAction *addFolderAct = new QAction(tr("添加文件夹"),this);
     menu->addAction(quit);
+    menu->addAction(addFolderAct);
     m_trayIcon.setContextMenu(menu); 			 //设置右键菜单
     connect(quit, SIGNAL(triggered()),this, SLOT(stopAndExit()));
-
+    connect(addFolderAct, SIGNAL(triggered()),this, SLOT(addFolder()));
     //不显示任务栏
     setWindowFlags(Qt::FramelessWindowHint|Qt::Tool );
     m_trayIcon.show();
 }
+
+
 void MainWindow::stopAndExit(){
+    launcher.saveIni();
     close();
     m_trayIcon.hide();
+}
+
+void MainWindow::addFolder(){
+    launcher.addFolder(this);
 }
 
 

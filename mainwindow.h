@@ -3,7 +3,7 @@
 
 #include <QMainWindow>
 #include <QSystemTrayIcon>
-#include "luancher.h"
+#include "launcher.h"
 
 namespace Ui {
 class MainWindow;
@@ -22,7 +22,6 @@ public:
     void leaveEvent(QEvent *event);
 
     void rightClickMenu();
-
     void showIcon();
 
 
@@ -33,6 +32,7 @@ public:
 
 private slots:
     void stopAndExit();
+    void addFolder();
     void onTaskBoxContextMenuEvent();
 
 private:
@@ -41,7 +41,7 @@ private:
     QPixmap m_Pixmap;
     QPoint m_CurrentPos;
 
-    Luancher luancher;
+    Launcher launcher;
 
 };
 
