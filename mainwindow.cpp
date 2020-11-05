@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "chooser.h"
 
 #include <QtGui>
 #include <QMessageBox>
@@ -127,11 +128,11 @@ void MainWindow::onTaskBoxContextMenuEvent()
 }
 
 void MainWindow::showIcon(){
-
-
-    m_trayIcon.setIcon(QIcon(":/img/ouc.png"));     //设置图标
+    //设置图标
+    m_trayIcon.setIcon(QIcon(":/img/ouc.png"));
     m_trayIcon.setToolTip(tr("Known image viewer"));    //设置鼠标放上去显示的信息
-    QMenu *menu = new QMenu(this);			 //右键菜单
+    //右键菜单
+    QMenu *menu = new QMenu(this);
     QAction *quit = new QAction(tr("退出"),this);
     QAction *addFolderAct = new QAction(tr("添加文件夹"),this);
     menu->addAction(quit);
@@ -146,15 +147,15 @@ void MainWindow::showIcon(){
 
 
 void MainWindow::stopAndExit(){
-    launcher.saveIni();
-    close();
-    m_trayIcon.hide();
+    QApplication* app;
+    app->exit(0);
 }
 
 void MainWindow::addFolder(){
-    launcher.addFolder(this);
+
+    Chooser chooser(this);
+    chooser.exec();
+
 }
-
-
 
 

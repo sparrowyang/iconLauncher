@@ -26,15 +26,18 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    launcher.cpp
+    launcher.cpp \
+    chooser.cpp
 
 HEADERS += \
         mainwindow.h \
     menubar.h \
-    launcher.h
+    launcher.h \
+    chooser.h
 
 FORMS += \
-        mainwindow.ui
+        mainwindow.ui \
+    chooser.ui
 
 RESOURCES += \
     src_img.qrc
